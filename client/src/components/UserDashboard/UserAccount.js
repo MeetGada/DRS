@@ -44,6 +44,12 @@ function UserAccount({ user }) {
                 className="personIcon"
               />
               <Col lg={12} md={12} xs={12} className="m-2">
+                <b className="p-1">Name: </b>
+                <span className="userDetails">
+                  {localStorage.getItem("name")}
+                </span>
+              </Col>
+              <Col lg={12} md={12} xs={12} className="m-2">
                 <b className="p-1">Email: </b>
                 <span className="userDetails p-1">
                   {localStorage.getItem("email")}

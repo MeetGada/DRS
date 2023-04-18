@@ -1,24 +1,26 @@
-import React,{ useState, useContext , useEffect} from 'react';
-import { Table, Button } from 'react-bootstrap';
+import React,{ useState, useContext , useEffect, createContext} from 'react';
+import { Table, Button, Card } from 'react-bootstrap';
+// import { useNavigate, redirect } from "react-router-dom";
 import DashNav from './DashNav';
 import Sidebar from './Sidebar';
 import './AvailableRides.css';
 import contractContext from '../../utils/contractContext';
-// import Interact from '../../utils/interact';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
+export const converseContext = createContext({})
 
 function AvailableRides({userAccount, user}){
+    const navigate = useNavigate()
 
     const {currentAccount,listMyRides,connectWalletHandler,otherRides,joinRide} = useContext(contractContext);
-    connectWalletHandler()
-    // listMyRides(currentAccount)
-    // console.log(accountBalance)
-    // console.log(currentAccount)
-    // console.log(checkWalletConnected())
-    
-    useEffect(()=>{
-      listMyRides(currentAccount)
-    },[]);
+    connectWalletHandler() 
 
+    
+    useEffect(async()=>{
+      await listMyRides(currentAccount)
+    },[]);
+      
     const [sidebar, setSidebar] = useState(false);
 
     const showSidebar = () => setSidebar(!sidebar);
@@ -34,64 +36,60 @@ function AvailableRides({userAccount, user}){
        // called by passenger to send request to join ride
         console.log("joinRide() called for ride:",id);
     }
+    
 
+    const handleChat = async(walletAdrs) => {
+        // e.preventDefault()
+        try {
+            const rideDetails = await axios.get(`http://localhost:9002/api/ride/${walletAdrs.toLowerCase()}`)
+            // console.log(otherRides)
+            console.log(rideDetails.data)
+            // console.log()
+            const converseData = {
+                senderId: localStorage.getItem("id"),
+                receiverId: rideDetails.data[0].userId
+            }
+            const startConversation = await axios.post(`http://localhost:9002/api/startConversation/`, converseData)
+            
+            console.log(startConversation)
+            console.log(startConversation.data)
+            navigate("/messenger",{state:startConversation.data})
+            // console.log(value)
+          } catch(err) {
+            console.log(err)
+        }
+        console.log("Chat Clicked")
+    }
     return(
         <div>
             <DashNav sidebar={sidebar} showSidebar={showSidebar} userAccount={userAccount} user={user}/>
             <Sidebar sideNav={sidebar} />
             <div id="availableRidesContent" className={ sidebar ? 'availableRidesContent p-5 active' : 'availableRidesContent p-5'}>
                 <h1 className="rideTitle">Available Rides</h1>
-                <Table className="mt-3" responsive="sm">
-                    <thead>
-                    <tr>
-                        <th>No.</th>
-                        <th>Username</th>
-                        <th>Pick Up</th>
-                        <th>Destination</th>
-                        <th>Cost (₹)</th>
-                        <th>Ride Date</th>
-                        <th>Ride Time</th>
-                        <th></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    {/* <tr>
-                        <td>Mark</td>
-                        <td>Borivali,Mumbai</td>
-                        <td>Bandra,Mumbai</td>
-                        <td>22/04/2022</td>
-                        <td>4:30 pm</td> */}
-                        {/* <td> */}
-                            {/* if the ride is not joined button will appear else it will be clicked */}
-                            {/* { joinRide ? <Button className="joinButton" onClick={handleRide}>Join Ride</Button> */}
-                                {/* //    : <span className="requested">Requested</span>  */}
-                            {/* // } */}
-                        {/* </td> */}
-                    {/* </tr> */}
-                    {otherRides ? otherRides.map((item, index) => {
-                        return (
-                            // <li className={item.cNameLi}>
-                            //     <Link to={item.path} className={item.cNameLink} key={index}>
-                            //         {item.icon}
-                            //         <span className={item.cNameSpan}>{item.title}</span>
-                            //     </Link>
-
-                            // </li>
-                    <tr>
-                        <td>{index+1}</td>
-                        <td>{item[0]}</td>
-                        <td>{item[3]}</td>
-                        <td>{item[4]}</td>
-                        <td>{item[1]}</td>
-                        <td>{item[9]}</td>
-                        <td>{item[10]}</td>
-                        <td>{ joinRideState!=item[11] ? <Button className="joinButton" onClick = {e=> handleRide(e,item[11],item[1]) }>Join Ride</Button> : <span className="requested">Requested</span> }</td>
-                    </tr>
-
-                        );
-                    }) : null }
-                    </tbody>
-                </Table>
+                {otherRides ? otherRides.map((item, index) => {
+                    // {console.log(item)}
+                    return (
+                        <Card className="text-center mb-3" style={{ width: '75%' }}>
+                            <Card.Header>{item[0]}</Card.Header>
+                            <Card.Body>
+                                <Card.Title>Ride Details</Card.Title>
+                                <Card.Text>
+                                    <div>
+                                        {/* <p>Username : {item[0]}</p> */}
+                                        <p>Pick Up : {item[3]}</p>
+                                        <p>Destination : {item[4]}</p>
+                                        <p>Cost (₹) : {item[1]}</p>
+                                        <p>Ride Date : {item[9]}</p>
+                                        <p>Ride Time : {item[10]}</p>
+                                    </div>
+                                </Card.Text>
+                                <Button variant="outline-primary" onClick={() => handleChat(item[0])}>Chat With Driver</Button><br/><br/>
+                                { joinRideState!=item[11] ? <Button  variant="outline-dark" onClick = {e=> handleRide(e,item[11],item[1]) }>Join Ride</Button> : <span className="requested">Requested</span> }
+                            </Card.Body>
+                            {/* <Card.Footer className="text-muted">2 days ago</Card.Footer> */}
+                        </Card>
+                    );
+                }) : null }
             </div>
         </div>
     );

@@ -9,6 +9,7 @@ function DriverRegister(props) {
     const navigate = useNavigate();
 
     const [user, setUser] = useState({
+        name: "",
         email: "",
         mobile_no: "",
         driving_licence: "",
@@ -23,7 +24,7 @@ function DriverRegister(props) {
         })
     }
     const register = () => {
-        const { email, mobile_no, driving_licence, password } = user
+        const { email, name, mobile_no, driving_licence, password } = user
         if (email && mobile_no && driving_licence && password) {
 
             axios.post("http://localhost:9002/register", user).then(res => {
@@ -52,6 +53,14 @@ function DriverRegister(props) {
             </Modal.Header>
             <Modal.Body>
                 <Form>
+                <Form.Group as={Row} className="mb-3">
+                        <Form.Label column sm="2">
+                            Name
+                        </Form.Label>
+                        <Col sm="10">
+                            <Form.Control type="text" placeholder="Enter Name" name="name" value={user.name} onChange={handleChange} />
+                        </Col>
+                    </Form.Group>
                     <Form.Group as={Row} className="mb-3">
                         <Form.Label column sm="2">
                             Email

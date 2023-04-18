@@ -8,12 +8,13 @@ import Sidebar from './Sidebar';
 import './CreateRide.css';
 import Home from '../Home';
 import contractContext from '../../utils/contractContext';
+import axios from "axios";
 let o,d,dd,ad,kc,cost;
 let startLat, startLng, endLat, endLng,distance ;
 
 function CreateRide({ user }) {
     const [setOrigin] = useState();
-    const [setDestination] = useState();
+    const [walletAddress, setWalletAdress] = useState(null);
     const libraries = ["places","geometry"];
     const [rideData, setRideData] = useState({
         driveCost: cost, 
@@ -28,6 +29,19 @@ function CreateRide({ user }) {
         minutes: new Date().getMinutes(),
         seconds: new Date().getSeconds()
     });
+
+    useEffect(() => {
+        const acc = async() => {
+            await window.ethereum.request({
+            method: "eth_requestAccounts",
+            }).then((data) => {
+                setWalletAdress(data[0])
+            })
+        }
+        acc()
+    }, [])
+    
+    console.log(walletAddress)
 
     const handleOriginAdd=(value) => {
         const updateData ={
@@ -164,15 +178,16 @@ function CreateRide({ user }) {
               ...prevState,
               originAddress: value
             }));
-          };
-          const handleDestSelect = e => {
+        };
+        
+        const handleDestSelect = e => {
             const { name, value } = e.target
             console.log(name,value)
             setRideData(prevState => ({
               ...prevState,
               destAddress: value
             }));
-          };
+        };
     const { createRide, getTotalRideCount, currentAccount, accountBalance, checkWalletIsConnected, connectWalletHandler, checkWalletConnected } = useContext(contractContext);
     
 
@@ -206,17 +221,7 @@ function CreateRide({ user }) {
         setRideData(updateData);
       
     }
-    // const handlekmChange = e => {
-    //     const { name, value } = e.target
-    //     kc = parseInt(value)
-    //     dc = ad*kc
-    //     console.log(value)
-    //     document.getElementById("formActualFair").value = dc
-    //     setRideData({
-    //         ...rideData,
-    //         kmCost: value
-    //     })
-    // }
+
     const handleChange = (e) => {
         const { name, value } = e.target;
         console.log(name,value)
@@ -229,11 +234,9 @@ function CreateRide({ user }) {
 
 
 
-    const onCreateRide = (e) => {
+    const onCreateRide = async(e) => {
         e.preventDefault();
 
-
-        
         let {driveCost, capacity, originAddress, destAddress, year, month, day, hours, minutes, seconds,driveDist,kmCost,actualDist} = rideData;
         originAddress = o;
         destAddress = d;
@@ -253,19 +256,24 @@ function CreateRide({ user }) {
         
         // console.log(selectedDate)
 
-    } else {
-        const userDate = new Date(year, month, day, hours, minutes, seconds);
-        console.log(typeof originAddress)
-        const departAt = userDate.getTime();
-        createRide(driveCost, capacity, originAddress, destAddress, departAt);
-        console.log(driveCost, capacity, originAddress, destAddress, departAt)
-        alert("ride created")
-        
-            
+        } else {
+            const userDate = new Date(year, month, day, hours, minutes, seconds);
+            console.log(typeof originAddress)
+            const departAt = userDate.getTime();
+            createRide(driveCost, capacity, originAddress, destAddress, departAt);
+            console.log(driveCost, capacity, originAddress, destAddress, departAt)
+            const rideData = {
+                driveCost, capacity, originAddress, destAddress, departAt,
+                name: localStorage.getItem("name"), walletAddress,
+                userId: localStorage.getItem("id")
+            }
+            const sendDB = await axios.post(`http://127.0.0.1:9002/api/rideDetails/`, rideData)
+            console.log(sendDB.data)
+            alert("ride created")
         }
     }
 
-
+    // console.log(connectWalletHandler())
     connectWalletHandler()
     getTotalRideCount()
     // createRide(10, 2, "Barshi", "Aurangabad", 1000)
@@ -332,41 +340,41 @@ function CreateRide({ user }) {
                                     </Row>
                                 </Form.Group>
                                 <Form.Group className="mt-4" controlId="formBasicPickUp">
-                                        <Row>
-                                            <Col md={3} xs={12}>
+                                    <Row>
+                                        <Col md={3} xs={12}>
                                             <Form.Label>Source</Form.Label>
                                             </Col>
                                             <Col md={9} xs={12}>
                                             <AutocompleteInput  onPlaceChanged={handleOriginSelect} name="originAddress" value={rideData.originAddress} onChange={handleOriginAdd} >
 
                                             </AutocompleteInput>
-                                            </Col>
-                                        </Row>
-                                        </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Form.Group>
 
-                                        <Form.Group className="mt-4" controlId="formBasicDestination">
-                                        <Row>
-                                            <Col md={3} xs={12}>
+                                <Form.Group className="mt-4" controlId="formBasicDestination">
+                                    <Row>
+                                        <Col md={3} xs={12}>
                                             <Form.Label>Destination</Form.Label>
-                                            </Col>
-                                            <Col md={9} xs={12}>
+                                        </Col>
+                                        <Col md={9} xs={12}>
                                             <AutocompleteInput onPlaceChanged={handleDestSelect}  className="rideInput" name="destAddress" value={rideData.destAddress} onChange={handleDestinationAdd}>
 
                                             </AutocompleteInput>
-                                            </Col>
-                                        </Row>
-                                        </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Form.Group>
 
-                                        <Form.Group className="mt-4" controlId="formBasicDist">
-                                        <Row>
-                                            <Col md={3} xs={12}>
+                                <Form.Group className="mt-4" controlId="formBasicDist">
+                                    <Row>
+                                        <Col md={3} xs={12}>
                                             <Form.Label>Distance</Form.Label>
-                                            </Col>
-                                            <Col md={9} xs={12}>
+                                        </Col>
+                                        <Col md={9} xs={12}>
                                             <Form.Control type="text" placeholder="Distance" className="Form-control" name="driveDist" value={rideData.driveDist} readOnly  />
-                                            </Col>
-                                        </Row>
-                                        </Form.Group>
+                                        </Col>
+                                    </Row>
+                                </Form.Group>
                                 <Form.Group className="mt-4" controlId="formBasicFair">
                                 <Row>
                                         <Col md={3} xs={12}>

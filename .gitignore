@@ -2,6 +2,7 @@
 
 # dependencies
 /client/node_modules
+/BackEnd/node_modules
 /userDatabase/node_modules
 /.pnp
 .pnp.js

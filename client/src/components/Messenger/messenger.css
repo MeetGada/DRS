@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@1,300&display=swap');
+
+.messenger {
+    width: 100%;
+    margin: 40px 0 0 0;
+    /* margin-top: 4%; */
+    height: calc(100vh - 70px);
+    display: flex;
+}
+
+#content{
+    display: flex;
+    height: calc(100vh - 70px) !important;
+    /* overflow-x: hidden;
+    overflow-y: hidden; */
+}
+
+
+.page-content {
+    width: calc(100% - 16rem);
+    /* margin-top: 70px; */
+    margin-top: 0px !important;
+    margin-left: 16rem;
+    transition: all 0.4s;
+} 
+
+#sidebar.active {
+    left: 0;
+    transition: 350ms;
+    margin-left: -16rem;
+}
+
+#content.active {
+    width: 100%;
+    margin: 40px 0 0 0;
+}
+  
+
+.chatMenu {
+    flex: 3.5;
+}
+
+.chatMenuInput {
+    width: 90%;
+    padding: 10px 0;
+    border: none;
+    border-bottom: 1px solid gray;
+
+}
+
+.chatBox {
+    flex: 5.5;
+}
+
+.chatBoxWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+}
+
+.noConvText{
+    top:10%;
+    position: absolute;
+    font-size: 50px;
+    color: darkgray;
+    cursor: default;
+    /* text-align: center; */
+}
+
+.chatBoxTop {
+    height: 100%;
+    overflow-y: scroll !important;
+    padding-right: 10px;
+}
+
+.chatBoxBottom {
+    margin: 5px 0px;
+    padding: 10px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.chatMessageInput {
+    width: 90%;
+    /* height: 90px; */
+    padding: 10px;
+}
+
+.chatTitle {
+    position: relative;
+    background-color: rgb(0, 0, 0);
+    color: aliceblue;    
+    justify-content: center;
+    display: flex;
+}
+
+.conversationName.active {
+    margin: 10px 10px;
+    font-weight: 500;
+    font-size: 22px;
+    font-family: 'Merriweather', serif;
+}
+
+.chatSubmitButton {
+    width: 70px;
+    height: 40px;
+    border: solid;
+    border-radius: 5;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+}
+
+.chatOnline {
+    flex: 3;
+}
+
+.chatMenuWrapper, .chatBoxWrapper, .chatOnlineWrapper {
+    padding: 10px;
+    height: 100%;
+}
+
+@media (max-width: 768px) {
+    #sidebar {
+      margin-left: -16rem;
+    }
+    #sidebar.active {
+      margin-left: 0;
+    }
+    #content {
+      width: 100%;
+      margin: 70px 0 0 0;
+    }
+    #content.active {
+      margin-left: 16rem;
+      width: calc(100% - 16rem);
+    }
+    .chatMenu {
+        flex: 1;
+    }
+
+    .chatMenuInput {
+        display: none;
+    }
+
+    .chatBox{
+        flex: 10;
+    }
+
+    .chatOnline{
+        flex: 1px;
+    }
+}

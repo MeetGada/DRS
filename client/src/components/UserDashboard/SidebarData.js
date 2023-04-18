@@ -52,13 +52,13 @@ export const SidebarData = [
     cNameLi: 'nav-item py-1',
     cNameLink: 'nav-link text-decoration-none sideNavLink',
     cNameSpan: 'ms-3 text-white'
+  },
+  {
+    title: 'Messages',
+    path: '/messenger',
+    icon: <BsIcons.BsFillChatTextFill className="text-white"/>,
+    cNameLi: 'nav-item py-1',
+    cNameLink: 'nav-link text-decoration-none sideNavLink',
+    cNameSpan: 'ms-3 text-white'
   }
-  // {
-  //   title: 'Log out',
-  //   path: '/',
-  //   icon: <FiIcons.FiLogOut className="text-white"/>,
-  //   cNameLi: 'nav-item logout',
-  //   cNameLink: 'nav-link text-decoration-none sideNavLink',
-  //   cNameSpan: 'ms-3 text-white'
-  // }
 ];

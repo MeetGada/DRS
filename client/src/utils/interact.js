@@ -5,7 +5,7 @@ import contractContext from "./contractContext";
 import { ethers } from "ethers";
 import axios from "axios";
 
-const contractAddress = "0x1737B6CFc489cb62dcDac18386EE8Cfd7e65C19f";
+const contractAddress = "0x771e6304524280d853Ee3455Bfcd6c0aB8790Ad5";
 
 function Interact(props) {
   const [currentAccount, setCurrentAccount] = useState(null);

@@ -16,6 +16,8 @@ function Sidebar(props) {
     const logout = () =>{
         console.log("logout Clicked....")
         localStorage.removeItem('mobile_no')
+        // localStorage.removeItem('id')
+        // localStorage.removeItem('email')
 
         navigate('/')
 
@@ -44,9 +46,8 @@ function Sidebar(props) {
   
                     <li className='nav-item logout '>
                         <FiIcons.FiLogOut className="text-white"/>
-                            <Button className='ms-3 text-white button sideNavLink' onClick={()=>logout()}>Log out</Button>
+                        <Button className='ms-3 text-white button sideNavLink' onClick={()=>logout()}>Log out</Button>
                     </li>
-
                 </ul>
             </div>
         </div>
