@@ -72,7 +72,7 @@ function CreateRide({ user }) {
 
 
         const { isLoaded, loadError } = useLoadScript({
-          googleMapsApiKey: "AIzaSyAuGLzaNRFclsIfbMGBuZKTPSd7pjeI0xE",
+          googleMapsApiKey: "YOUR MAP'S API KEY",
           libraries
          
         });          
